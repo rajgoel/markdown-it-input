@@ -6,10 +6,10 @@
     "markdown",
     "markdown-it",
     "markdown-it-plugin",
-    "input"
+    "markdown-it-input"
   ],
   "author": "Asvin Goel",
-  "main": "input.js",
+  "main": "markdown-it-input.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/rajgoel/markdown-it-input.git"
