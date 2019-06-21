@@ -104,7 +104,7 @@ For checkboxes, radio boxes, and dropdown menus, you can also add an array of at
 <head>
   <meta charset='utf-8'>
   <script src="markdown-it.min.js"></script>
-  <script src="input.js"></script>
+  <script src="markdown-it-input.js"></script>
 </head>
 
 <body>
