@@ -10,7 +10,7 @@ Converts text of the form:
 first name = ___
 ```
 
-into a form input like:
+into:
 ```html
 <div>
 <label for="first_name">First Name </label>
@@ -25,7 +25,7 @@ ___
 ___
 ```
 
-into a form input like:
+into:
 ```html
 <div>
 <textarea></textarea>
