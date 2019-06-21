@@ -68,7 +68,7 @@ into:
 </div>
 ```
 
-### Dropdown menues
+### Dropdown list
 Converts text of the form:
 ```
 Please select = {Option 1, 2; Option 3; Option 4, 5}
@@ -91,7 +91,7 @@ For each input element you can add a HTML comment
 <!-- input: { "name":"input", "container": {"class"="input"}, "element": {"value":"Some value"} } -->
 ```
 to specify a name for the input field and to add attributes for the ```div``` container or the respective input element.
-For checkboxes, radio boxes, and dropdown menus, you can also add an array of attributes for the different options, e.g.,
+For checkboxes, radio boxes, and dropdown lists, you can also add an array of attributes for the different options, e.g.,
 ```html
 <!-- input: { "name":"input", "container": {"class"="input"}, "children": [{},{"checked":"checked"},{}] } -->
 ```
