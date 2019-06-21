@@ -90,7 +90,7 @@ For each input element you can add a HTML comment
 ```html
 <!-- input: { "name":"input", "container": {"class"="input"}, "element": {"value":"Some value"} } -->
 ```
-to specify a name of the input field and to add attributes for the ```div``` container or the respective input element.
+to specify a name for the input field and to add attributes for the ```div``` container or the respective input element.
 For checkboxes, radio boxes, and dropdown menus, you can also add an array of attributes for the different options, e.g.,
 ```html
 <!-- input: { "name":"input", "container": {"class"="input"}, "children": [{},{"checked":"checked"},{}] } -->
