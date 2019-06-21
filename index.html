@@ -1,0 +1,33 @@
+<html>
+<head>
+  <meta charset='utf-8'>
+  <script src="markdown-it.min.js"></script>
+  <script src="input.js"></script>
+  <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"></script>
+</head>
+
+<body>
+<div id="content">
+$a^2 + b^2 =$ = ___
+<!-- input: { "name":"input1", "element": {"size":"30", "value":"Your solution"} } -->
+
+___
+___
+<!-- input: { "name":"input2", "value":"Your text\n...\n...\n...", "container":{"style":"margin-top:20px;margin-bottom:20px"},"element": {"rows":"10", "cols":"50",  "style":"background-color:lightgray"} } -->
+
+Select your option(s) = [] Option 1 [] Option 2 [] Option 3
+<!-- input: { "name":"input3", "children": [{},{"checked":"checked"},{}] } -->
+
+Select (exactly) one option = () Option 1 () Option 2 () Option 3
+
+Please select = {Option 1, 2; Option 3; Option 4, 5}
+</div>
+
+  <script>
+	document.getElementById('content').innerHTML = markdownit().use(input).render( document.getElementById('content').innerHTML );
+	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+  </script>
+
+</body>
+</html>

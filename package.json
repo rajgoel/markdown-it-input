@@ -1,0 +1,22 @@
+{
+  "name": "markdown-it-input",
+  "version": "0.1",
+  "description": "markdown-it extension for rendering input fields",
+  "keywords": [
+    "markdown",
+    "markdown-it",
+    "markdown-it-plugin",
+    "input"
+  ],
+  "author": "Asvin Goel",
+  "main": "input.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rajgoel/markdown-it-input.git"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "markdown-it": "^8.4.2"
+  }
+}
