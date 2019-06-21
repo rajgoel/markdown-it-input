@@ -11,14 +11,13 @@ first name = ___
 ```
 
 into a form input like:
-			//
 ```html
 <div>
 <label for="first_name">First Name </label>
 <input type="text" name="first_name"/>
 </div>
 ```
-			//
+
 ### Textarea
 Converts text of the form:
 ```
