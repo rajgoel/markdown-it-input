@@ -7,14 +7,14 @@ Add input fields to your Markdown documents rendered by [markdown-it](https://gi
 ### Text 
 Converts text of the form:
 ```
-first name = ___
+Name = ___
 ```
 
 into:
 ```html
 <div>
-<label for="first_name">First Name </label>
-<input type="text" name="first_name"/>
+<label for="name">Name </label>
+<input type="text" name="name" id="name"/>
 </div>
 ```
 
