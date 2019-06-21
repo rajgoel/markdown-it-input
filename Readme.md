@@ -85,7 +85,7 @@ into:
 </div>
 ```
 
-## Options
+## Custom attributes
 For each input element you can add a HTML comment
 ```html
 <!-- input: { "name":"input", "container": {"class"="input"}, "element": {"value":"Some value"} } -->
