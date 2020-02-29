@@ -89,9 +89,17 @@ int main()
 This will be converted into
 
 ```html
-<div id="yourname">
-<label for="input-yourname">Name </label>
-<input type="text" name="yourname" id="input-yourname">
+<div id="code">
+<textarea name="code" id="input-code" data-language="c++" value="#include &lt;iostream&gt;\r\nusing namespace std;\r\n\r\nint main() \r\n{\r\n    cout &lt;&lt; \"Hello, World!\";\r\n    return 0;\r\n}\r\n">
+#include <iostream>;
+using namespace std;
+
+int main() 
+{
+    cout << "Hello, World!";
+    return 0;
+}
+</textarea>
 </div>
 ```
 

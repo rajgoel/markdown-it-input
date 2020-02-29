@@ -122,20 +122,13 @@ input.render = function( type, data, regexp ) {
 			html += input.addAttributes( '<input type="text">', params);
 		break;
 		case "textarea":
-			var lines = data[2].split('\n');
-			var i = lines[0].lastIndexOf('"');			
-			var language = lines[0].substr(i+1).trim();
+			var language = data[1].trim();
 			if ( language ) {
 				params['data-language'] = language;
 			}
-			// remove first and last line
-			lines.splice(0,1);
-			lines.splice(lines.length-1,1);
-			// join the array back into a single string
-			var value = lines.join('\n').trim();
-//console.log("value: ", value);
-			if ( value ) {
-				params.value = value;
+
+			if ( data[2] ) {
+				params.value = data[2];
 			}
 
 			html += input.addAttributes( '<textarea>', params);
