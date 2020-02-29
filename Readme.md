@@ -73,6 +73,7 @@ and will be converted into
 
 It is possible to provide the `name`, `value`, and `data-language`  attributes as shown in the example below.
 
+```
 """c++
 #include <iostream>
 using namespace std;
@@ -83,6 +84,7 @@ int main()
     return 0;
 }
 """[code]
+```
 
 This will be converted into
 
@@ -197,18 +199,17 @@ For checkboxes, radio boxes, and dropdown lists, you can also add an array of at
 <body>
 <div id="content">
 Name = ___
-<!-- input: { "name":"input1", "element": {"size":"30", "value":"Your name"} } -->
 
-___
-___
-<!-- input: { "name":"input2", "value":"Your text\n...\n...\n...", "container":{"style":"margin-top:20px;margin-bottom:20px"},"element": {"rows":"10", "cols":"50",  "style":"background-color:lightgray"} } -->
+"""
+"""
+<!-- input: { "name":"mytextarea", "value":"Your text\n...\n...\n...", "div":{"id":"myTextareaID"} } -->
 
 Select your option(s) = [] Option 1 [] Option 2 [] Option 3
-<!-- input: { "name":"input3", "children": [{},{"checked":"checked"},{}] } -->
+<!-- input: { "name":"input3", "options": [{},{"checked":"checked"},{}] } -->
 
 Select (exactly) one option = () Option 1 () Option 2 () Option 3
 
-Please select = {Option 1, 2; Option 3; Option 4, 5}
+Please select = {Option 1; Option 2; Option 3}
 </div>
 
   <script>
