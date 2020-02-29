@@ -3,30 +3,77 @@
   <meta charset='utf-8'>
   <script src="markdown-it.min.js"></script>
   <script src="markdown-it-input.js"></script>
-  <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+<style>
+textarea {
+ width: 100%;
+ min-height: 150px;
+}
+</style>
 </head>
 
 <body>
 <div id="content">
-$a^2 + b^2 =$ = ___
-<!-- input: { "name":"input1", "element": {"size":"30", "value":"Your solution"} } -->
+# Markdown for input fields
 
-___
-___
-<!-- input: { "name":"input2", "value":"Your text\n...\n...\n...", "container":{"style":"margin-top:20px;margin-bottom:20px"},"element": {"rows":"10", "cols":"50",  "style":"background-color:lightgray"} } -->
+## Text fields
 
-Select your option(s) = [] Option 1 [] Option 2 [] Option 3
-<!-- input: { "name":"input3", "children": [{},{"checked":"checked"},{}] } -->
+Name = ___
 
-Select (exactly) one option = () Option 1 () Option 2 () Option 3
+Name [yourname] = ___
 
-Please select = {Option 1, 2; Option 3; Option 4, 5}
+Name [yourname] = __Your name__
+
+
+
+## Text areas
+
+An empty text area:
+
+"""
+"""
+
+An text area with content:
+
+"""c++
+#include <iostream>
+using namespace std;
+
+int main() 
+{
+    cout << "Hello, World!";
+    return 0;
+}
+"""[code]
+
+A text area with custom attributes:
+
+"""
+"""
+<!-- input: { "div":{"style":"margin-top:20px;margin-bottom:20px"}, "name":"somtextarea", "value":"Your text\n...\n...\n...", "rows":"10", "cols":"50",  "style":"background-color:lightgray" } -->
+
+## Checkboxes
+
+Select your option(s)[checkbox] = [] Option 1 | Value 1 [] Option 2 | Value 2 [] Option 3 | Value 3
+
+A checkbox with custom attributes:
+
+Select your option(s)[checkbox] = [] Option 1 [] Option 2 [] Option 3
+<!-- input: { "options": [{},{"checked":"checked"},{}] } -->
+
+## Radio buttons
+
+Select (exactly) one option[radio] = () Option 1 | Value 1 () Option 2 | Value 2 () Option 3  | Value 3
+
+## Dropdown menus
+
+Please select[dropdown] = {Option 1 | Value 1 ; Option 2 | Value 2; Option 3 | Value 3 }
+
+
 </div>
 
   <script>
-	document.getElementById('content').innerHTML = markdownit().use(input).render( document.getElementById('content').innerHTML );
-	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	document.getElementById('content').innerHTML = markdownit({html: true}).use(input, { prefix: "myform"}).render( document.getElementById('content').innerHTML );
   </script>
 
 </body>

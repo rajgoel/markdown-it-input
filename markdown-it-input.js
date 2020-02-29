@@ -3,7 +3,11 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-function input(md) {
+function input(md, config) {
+	input.config = config;
+	input.prefix = '';
+	if ( input.config && input.config.prefix ) input.prefix = input.config.prefix + "-";
+
         for (let rule of input.rules) {
 		md.block.ruler.before( 'hr', rule.name, input.parseBlock(rule) );
 
@@ -29,7 +33,9 @@ input.addAttributes = function( tag, attributes ) {
 	if ( attributes && tag[tag.length -1 ] == '>') {
 		tag = tag.slice(0, -1);
 		for (var key in attributes) {
-			tag += ' ' + key +'="' + attributes[key]+ '"';
+			if (attributes[key]) {
+				tag += ' ' + key +'="' + attributes[key]+ '"';
+			}
 		}
 		tag += '>';
 	}
@@ -41,166 +47,124 @@ input.sanitize = function ( name ) {
 }
 
 input.render = function( type, data, regexp ) {
-	var label = '';
-	if ( data.length > 0 ) {
-		label = data[1].trim();
+	if ( data.length == 0 ) {
+		console.error("No data for element to render!");
 	}
-
 
 	// Get parameters added within comment
 	var params = {};
 	if ( ( ( !regexp && data.length > 1) || ( regexp && data.length > 2) ) && data[data.length-1] ){
 		params = JSON.parse( data[data.length-1] );
 	}
+	var divParams = params.div;
+	var optionsParams = params.options;
+	delete params.div;
+	delete params.options;
 
-	// If no name is given create name from label
-	if ( !params.name) {
-		params.name = input.sanitize(label);
+	var label = '';
+
+	var name = type;
+	if ( type == "textarea") {
+//console.log(data[3]);
+		if ( data[3] ) name = data[3].trim();
 	}
+	else {
+//console.log(data[2]);
+		if ( data[1] ) label = data[1].trim();
+		if ( data[2] ) {
+			name = data[2].trim();
+		}
+		else {
+			name = input.sanitize(label) || name;
+		}
+	}
+//console.warn(type,label, name, "|", JSON.stringify(data), "|");
 
 	// Determine whether input data has options
 	var options = [];
-	if ( regexp && data.length > 1) {
-		options = data[2].trim().split(regexp).filter((s) => s != "");
+	if ( regexp && data.length > 3) {
+		options = data[3].trim().split(regexp).filter((s) => s != "");
 //console.log("options: " + JSON.stringify(options));
 	}
-	if (!params.children) params.children = [];
-	params.children.length =  options.length;
+
+	if ( !divParams ) divParams = {}; 
+	if ( !divParams.id ) divParams.id = input.prefix + name; 
+
+	if ( !params ) params = {};
+	if ( !params.name ) params.name = name; 
+	if ( !params.id ) params.id = input.prefix + "input-" + name; 
+
+	if (!optionsParams) optionsParams = [];
+	optionsParams.length =  options.length;
 	for (let i=0; i < options.length; i++) {
-		if ( !params.children[i] ) params.children[i] = {};
-		if ( !params.children[i].value ) params.children[i].value = options[i]
+		if ( !optionsParams[i] ) optionsParams[i] = {};
+		var j = options[i].lastIndexOf('|');
+		if ( j >= 0 ) {
+			optionsParams[i].value = options[i].substr(j+1).trim();
+			options[i] = options[i].substr(0,j).trim();
+		}
+		if ( !optionsParams[i].value ) {
+			optionsParams[i].value = options[i];
+		}
 	}	
 
 //console.log("PARAMS: " + JSON.stringify(params));
 
 	// Create div around input and add parameters
-	var html = input.addAttributes( '<div>', params.container );
+	var html = input.addAttributes( '<div>', divParams );
 
 	switch( type ) {
 		case "textfield":
-			// Creates a text input element.
-			// Converts text of the form:
-			//
-			// "first name = ___"
-			//
-			// into a form input like:
-			//
-			// <div>
-			// <label for="first_name">First Name </label>
-			// <input type="text" name="first_name"/>
-			// </div>
-			//
-			// Specifics:
-			// * Requires at least 3 underscores on the right-hand side of the equals sign.
-
-			if ( !params.element ) params.element = {};
-			if ( !params.element.name ) params.element.name = params.name; 
-			if ( !params.element.id ) params.element.id = params.name; 
-			html += '<label for="' + params.element.id + '">' + label + ' </label>';	
-			html += input.addAttributes( '<input type="text">', params.element);
-			html += '</input>';
+			if ( data.length > 3 && data[3] ) {
+				params.value = data[3];
+			}
+			html += '<label for="' + params.id + '">' + label + ' </label>';	
+			html += input.addAttributes( '<input type="text">', params);
 		break;
 		case "textarea":
-			// Creates a textarea element.
-			// Converts text of the form:
-			//
-			// "___"
-			// "___"
-			//
-			// into a form input like:
-			//
-			// <div>
-			// <textarea></textarea>
-			// </div>
-			//
-			// Specifics:
-			// * Requires at least two lines starting with at least 3 underscores each
+			var lines = data[2].split('\n');
+			var i = lines[0].lastIndexOf('"');			
+			var language = lines[0].substr(i+1).trim();
+			if ( language ) {
+				params['data-language'] = language;
+			}
+			// remove first and last line
+			lines.splice(0,1);
+			lines.splice(lines.length-1,1);
+			// join the array back into a single string
+			var value = lines.join('\n').trim();
+//console.log("value: ", value);
+			if ( value ) {
+				params.value = value;
+			}
 
-			if ( !params.element ) params.element = {};
-			if ( !params.element.name ) params.element.name = params.name; 
-			html += input.addAttributes( '<textarea>', params.element);
+			html += input.addAttributes( '<textarea>', params);
 			if ( params.value ) html += params.value;
 			html += '</textarea>';	
 		break;
 		case "checkbox":
-			// Creates a group of checkboxes.
-			// Converts text of the form:
-			//
-			// Select your option(s) = [] Option 1 [] Option 2 [] Option 3
-			//
-			// into:
-			//
-			// <div>
-			// <label>Select your option(s) </label>
-			// <input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_1" value="Option 1">
-			// <label for="select_your_option(s)-option_1">Option 1</label>
-			// <input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_2" value="Option 2">
-			// <label for="select_your_option(s)-option_2">Option 2</label>
-			// <input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_3" value="Option 3">
-			// <label for="select_your_option(s)-option_3">Option 3</label>
-			// </div>
-
 			html += '<label>' + label + ' </label>';	
 		        for (let i=0; i < options.length; i++) {
-				if ( !params.children[i] ) params.children[i] = {};
-				if ( !params.children[i].id ) params.children[i].id = input.sanitize(params.name + '-' + options[i]); 
-				html += input.addAttributes('<input type="checkbox" name="' + params.name + '">', params.children[i]);	
-				html += '</input>';
-				html += '<label for="' + params.children[i].id + '">' + options[i] + '</label>';	
+				if ( !optionsParams[i] ) optionsParams[i] = {};
+				if ( !optionsParams[i].id ) optionsParams[i].id = input.prefix + input.sanitize(name + '-' + options[i]); 
+				html += input.addAttributes('<input type="checkbox" name="' + name + '">', optionsParams[i]);	
+				html += '<label for="' + optionsParams[i].id + '">' + options[i] + '</label>';	
 			}
 		break;
 		case "radio":
-			// Creates a group of radio buttons.
-			// Converts text of the form:
-			//
-			// Select (exactly) one option = () Option 1 () Option 2 () Option 3
-			//
-			// into:
-			//
-			// <div>
-			// <label>Select (exactly) one option </label>
-			// <input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_1" value="Option 1">
-			// <label for="select_(exactly)_one_option-option_1">Option 1</label>
-			// <input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_2" value="Option 2">
-			// <label for="select_(exactly)_one_option-option_2">Option 2</label>
-			// <input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_3" value="Option 3">
-			// <label for="select_(exactly)_one_option-option_3">Option 3</label>
-			// </div>
-
 			html += '<label>' + label + ' </label>';	
 		        for (let i=0; i < options.length; i++) {
-				if ( !params.children[i] ) params.children[i] = {};
-				if ( !params.children[i].id ) params.children[i].id = input.sanitize(params.name + '-' + options[i]); 
-				html += input.addAttributes('<input type="radio" name="' + params.name + '">', params.children[i]);	
-				html += '</input>';
-				html += '<label for="' + params.children[i].id + '">' + options[i] + '</label>';	
+				if ( !optionsParams[i] ) optionsParams[i] = {};
+				if ( !optionsParams[i].id ) optionsParams[i].id = input.prefix + input.sanitize(name + '-' + options[i]); 
+				html += input.addAttributes('<input type="radio" name="' + name + '">', optionsParams[i]);	
+				html += '<label for="' + optionsParams[i].id + '">' + options[i] + '</label>';	
 			}
 		break;
 		case "select":
-			// Creates an HTML dropdown menu.
-			//
-			// Converts text of the form:
-			//
-			// Please select = {Option 1, 2; Option 3; Option 4, 5}
-			//
-			// into:
-			//
-			// <div>
-			// <label for="please_select">Please select </label>
-			// <select name="please_select" id="please_select">
-			// <option value="Option 1, 2">Option 1, 2</option>
-			// <option value="Option 3">Option 3</option>
-			// <option value="Option 4, 5">Option 4, 5</option>
-			// </select>
-			// </div>			
-
-			if ( !params.element ) params.element = {};
-			if ( !params.element.name ) params.element.name = params.name; 
-			if ( !params.element.id ) params.element.id = params.name; 
-			html += '<label for="' + params.element.id + '">' + label + ' </label>';	
-			html += input.addAttributes( '<select>', params.element);
+			html += '<label for="' + params.id + '">' + label + ' </label>';	
+			html += input.addAttributes( '<select>', params);
 		        for (let i=0; i < options.length; i++) {
-				html += input.addAttributes('<option>', params.children[i]);	
+				html += input.addAttributes('<option>', optionsParams[i]);	
 				html += options[i] + '</option>' ;	
 			}
 			html += '</select>';	
@@ -252,31 +216,31 @@ input.parseLine = function(rule) { return function (state, silent) {
 
 input.rules = [
     {
-		// Turns "label = ___" into form input element
+		// Turns 'label[name] = ___' or 'label[name] = __value_' into form input element
                 type: 'textfield', 
-                regexp: /(.*)\s*=\s*___\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy
+                regexp: /([^\n\[]*)(?:\[(.+)\])?\s*=\s*__+([^\n_]+)?_+\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy
     },
     {
-		// Turns "___\n___"  into text area element
+		// Turns '\"\"\"lang\nvalue\n\"\"\"[name]'  into text area element
                 type: 'textarea', 
-                regexp: /(____*(?:\n____*)+)(?:\n|$)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy
+                regexp: /(?:"""+(.*)((?:\n[^"].*)*)(?:\n"""+)+)(?:\[(.+)\])?(?:\n|$)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy
     },
     {
-		// Turns expressions like "label = [] option 1 [] option 2 [] option 3" into checkboxes
+		// Turns expressions like 'label[name] = [] option 1 | value 1 [] option 2 | value 2 [] option 3 | value 1' into checkboxes
                 type: 'checkbox',
-                regexp: /(.*)\s*=\s*((?:\[\s?\][^\[\r\n]+\r?\n?)+)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
+                regexp: /([^\n\[]*)(?:\[(.+)\])?\s*=\s*((?:\[\s?\][^\[\r\n]+\r?\n?)+)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
 		options: /\s*\[\s?\]\s*/
     },
     {
-		// Turns expressions like "label = () option 1 () option 2 () option 3" into radio buttons
+		// Turns expressions like 'label[name] = () option 1 | value 1 () option 2 | value 2 () option 3 | value 3' into radio buttons
                 type: 'radio', 
-                regexp: /(.*)\s*=\s*((?:\(\s?\)[^\(\r\n]+\r?\n?)+)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
+                regexp: /([^\n\[]*)(?:\[(.+)\])?\s*=\s*((?:\(\s?\)[^\(\r\n]+\r?\n?)+)\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
 		options: /\s*\(\s?\)\s*/
     },
     {
-		// Turns expressions like "label = {option 1, option 2, option 3}" into an HTML select
+		// Turns expressions like 'label[name] = {option 1 | value 1, option 2 | value 2, option 3 | value 3}' into an HTML select
                 type: 'select', 
-                regexp: /(.*)\s*=\s*{\r?\n?([^;}\r\n]+(?:;\r?\n?[^;}\r\n]+)*)\r?\n?}\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
+                regexp: /([^\n\[]*)(?:\[(.+)\])?\s*=\s*{\r?\n?([^;}\r\n]+(?:;\r?\n?[^;}\r\n]+)*)\r?\n?}\s*(?:<!--\s*input:\s*({.*})\s*-->)?/gy,
 		options: /\s*[;\{\}]\s*/
     }
 ];

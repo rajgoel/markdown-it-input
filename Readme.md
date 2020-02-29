@@ -4,96 +4,183 @@ Add input fields to your Markdown documents rendered by [markdown-it](https://gi
 
 ## Input fields
 
-### Text 
-Converts text of the form:
+### Text
+
+A text field can be provided as
+
 ```
 Name = ___
 ```
 
-into:
+and will be converted into
+
 ```html
-<div>
-<label for="name">Name </label>
-<input type="text" name="name" id="name"/>
+<div id="name">
+<label for="input-name">Name </label>
+<input type="text" name="name" id="input-name">
+</div>
+```
+
+The `name` and the `id`s are automatically generated from the text before the `=` sign.
+Alternatively, the `name` can be explictly given as shown in the example below and the `id`s are generated from the given name.
+
+
+```
+Name [yourname] = ___
+```
+
+This will be converted into
+
+```html
+<div id="yourname">
+<label for="input-yourname">Name </label>
+<input type="text" name="yourname" id="input-yourname">
+</div>
+```
+
+It is possible to set the `value` of the text field as shown in the example below.
+
+```
+Name [yourname] = __Your name__
+```
+
+which will be converted into
+
+```html
+<div id="yourname">
+<label for="input-yourname">Name </label>
+<input type="text" name="yourname" id="input-yourname" value="Your name">
 </div>
 ```
 
 ### Textarea
-Converts text of the form:
+
+An empty text area can be provided as
+
 ```
-___
-___
+"""
+"""
 ```
 
-into:
+and will be converted into
+
 ```html
-<div>
-<textarea></textarea>
+<div id="textarea">
+<textarea name="textarea" id="input-textarea">
+</textarea>
 </div>
 ```
+
+It is possible to provide the `name`, `value`, and `data-language`  attributes as shown in the example below.
+
+"""c++
+#include <iostream>
+using namespace std;
+
+int main() 
+{
+    cout << "Hello, World!";
+    return 0;
+}
+"""[code]
+
+This will be converted into
+
+```html
+<div id="yourname">
+<label for="input-yourname">Name </label>
+<input type="text" name="yourname" id="input-yourname">
+</div>
+```
+
 
 ### Checkboxes
-Converts text of the form:
+
+A checkbox input can be provided as
+
 ```
-Select your option(s) = [] Option 1 [] Option 2 [] Option 3
+Select your option(s)[checkbox] = [] Option 1 | Value 1 [] Option 2 | Value 2 [] Option 3 | Value 3
 ```
-into:
+
+and will be converted into
+
 ```html
-<div>
+<div id="checkbox">
 <label>Select your option(s) </label>
-<input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_1" value="Option 1">
-<label for="select_your_option(s)-option_1">Option 1</label>
-<input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_2" value="Option 2">
-<label for="select_your_option(s)-option_2">Option 2</label>
-<input type="checkbox" name="select_your_option(s)" id="select_your_option(s)-option_3" value="Option 3">
-<label for="select_your_option(s)-option_3">Option 3</label>
+<input type="checkbox" name="checkbox" value="Value 1" id="checkbox-option_1">
+<label for="checkbox-option_1">Option 1</label>
+<input type="checkbox" name="checkbox" value="Value 2" id="checkbox-option_2">
+<label for="checkbox-option_2">Option 2</label>
+<input type="checkbox" name="checkbox" value="Value 3" id="checkbox-option_3">
+<label for="checkbox-option_3">Option 3</label>
 </div>
 ```
+
+For every option the text after the `|` sign is used as `value`. 
+It is possible to omitt the `|` sign and use the label as `value`.
+If no `name` is provided, the `name` and `id`s are automatically generated.
+
 
 ### Radio buttons
-Converts text of the form:
+
+A radio button input can be provided as
+
 ```
-Select (exactly) one option = () Option 1 () Option 2 () Option 3
+Select (exactly) one option[radio] = () Option 1 | Value 1 () Option 2 | Value 2 () Option 3  | Value 3
 ```
-into:
+
+and will be converted into
+
 ```html
-<div>
+<div id="radio">
 <label>Select (exactly) one option </label>
-<input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_1" value="Option 1">
-<label for="select_(exactly)_one_option-option_1">Option 1</label>
-<input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_2" value="Option 2">
-<label for="select_(exactly)_one_option-option_2">Option 2</label>
-<input type="radio" name="select_(exactly)_one_option" id="select_(exactly)_one_option-option_3" value="Option 3">
-<label for="select_(exactly)_one_option-option_3">Option 3</label>
+<input type="radio" name="radio" value="Value 1" id="radio-option_1">
+<label for="radio-option_1">Option 1</label>
+<input type="radio" name="radio" value="Value 2" id="radio-option_2">
+<label for="radio-option_2">Option 2</label>
+<input type="radio" name="radio" value="Value 3" id="radio-option_3">
+<label for="radio-option_3">Option 3</label>
 </div>
 ```
 
-### Dropdown list
-Converts text of the form:
+For every option the text after the `|` sign is used as `value`. 
+It is possible to omitt the `|` sign and use the label as `value`.
+If no `name` is provided, the `name` and `id`s are automatically generated.
+
+### Dropdown menu
+
+A dropdown menu  can be provided as
+
 ```
-Please select = {Option 1, 2; Option 3; Option 4, 5}
+Please select[dropdown] = {Option 1 | Value 1 ; Option 2 | Value 2; Option 3 | Value 3 }
 ```
-into:
+
+and will be converted into
+
 ```html
-<div>
-<label for="please_select">Please select </label>
-<select name="please_select" id="please_select">
-<option value="Option 1, 2">Option 1, 2</option>
-<option value="Option 3">Option 3</option>
-<option value="Option 4, 5">Option 4, 5</option>
+<div id="dropdown">
+<label for="input-dropdown">Please select </label>
+<select name="dropdown" id="input-dropdown">
+<option value="Value 1">Option 1</option>
+<option value="Value 2">Option 2</option>
+<option value="Value 3">Option 3</option>
 </select>
 </div>
 ```
+For every option the text after the `|` sign is used as `value`. 
+It is possible to omitt the `|` sign and use the label as `value`.
+If no `name` is provided, the `name` and `id`s are automatically generated.
+
 
 ## Custom attributes
 For each input element you can add a HTML comment
 ```html
-<!-- input: { "name":"input", "container": {"class"="input"}, "element": {"value":"Some value"} } -->
+<!-- input: { "name":"input", "value":"Some value", "div": {"class"="input"} } -->
 ```
 to specify a name for the input field and to add attributes for the ```div``` container or the respective input element.
 For checkboxes, radio boxes, and dropdown lists, you can also add an array of attributes for the different options, e.g.,
 ```html
-<!-- input: { "name":"input", "container": {"class"="input"}, "children": [{},{"checked":"checked"},{}] } -->
+<!-- input: { "name":"input", "div": {"class"="input"}, "options": [{},{"checked":"checked"},{}] } -->
 ```
 
 
@@ -125,7 +212,7 @@ Please select = {Option 1, 2; Option 3; Option 4, 5}
 </div>
 
   <script>
-	document.getElementById('content').innerHTML = markdownit().use(input).render( document.getElementById('content').innerHTML );
+	document.getElementById('content').innerHTML = markdownit({html: true}).use(input, { prefix: "myform"}).render( document.getElementById('content').innerHTML );
   </script>
 
 </body>
