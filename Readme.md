@@ -128,7 +128,7 @@ and will be converted into
 
 For every option the text after the `|` sign is used as `value`. 
 It is possible to omitt the `|` sign and use the label as `value`.
-If no `name` is provided, the `name` and `id`s are automatically generated.
+If no `name` is provided, the `name` and `id` are automatically generated.
 
 
 ### Radio buttons
