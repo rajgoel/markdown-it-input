@@ -195,7 +195,7 @@ For checkboxes, radio boxes, and dropdown lists, you can also add an array of at
 
 ## Configuration
 
-The plugin allows to specify a prefix for thge `id` attributes.
+The plugin allows to specify a prefix for the `id` attributes.
 
 ```js
 document.getElementById('content').innerHTML = markdownit({html: true}).use(input, { prefix: "myform"}).render( document.getElementById('content').innerHTML );
