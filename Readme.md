@@ -21,8 +21,8 @@ and will be converted into
 </div>
 ```
 
-The `name` and the `id`s are automatically generated from the text before the `=` sign.
-Alternatively, the `name` can be explictly given as shown in the example below and the `id`s are generated from the given name.
+The `name` and the `id` are automatically generated from the text before the `=` sign.
+Alternatively, the `name` can be explictly given as shown in the example below and the `id` are generated from the given name.
 
 
 ```
@@ -155,7 +155,7 @@ and will be converted into
 
 For every option the text after the `|` sign is used as `value`. 
 It is possible to omitt the `|` sign and use the label as `value`.
-If no `name` is provided, the `name` and `id`s are automatically generated.
+If no `name` is provided, the `name` and `id` are automatically generated.
 
 ### Dropdown menu
 
@@ -179,7 +179,7 @@ and will be converted into
 ```
 For every option the text after the `|` sign is used as `value`. 
 It is possible to omitt the `|` sign and use the label as `value`.
-If no `name` is provided, the `name` and `id`s are automatically generated.
+If no `name` is provided, the `name` and `id` are automatically generated.
 
 
 ## Custom attributes
@@ -193,6 +193,13 @@ For checkboxes, radio boxes, and dropdown lists, you can also add an array of at
 <!-- input: { "name":"input", "div": {"class"="input"}, "options": [{},{"checked":"checked"},{}] } -->
 ```
 
+## Configuration
+
+The plugin allows to specify a prefix for thge `id` attributes.
+
+```js
+document.getElementById('content').innerHTML = markdownit({html: true}).use(input, { prefix: "myform"}).render( document.getElementById('content').innerHTML );
+```
 
 
 ## Use in Browser
